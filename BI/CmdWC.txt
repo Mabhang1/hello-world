@@ -1,0 +1,9 @@
+Wordcount/character count
+Check input file
+hdfs namenode -format
+start-all.sh
+hdfs fs -mkdir/ abhang
+hdfs fs -put/ abhang/input.txt 
+Open intellij from downloads inside bin- right click open in terminal- ./idea.sh
+Intellij opens with code
+In intellij terminal-hadoop jar target/wordcount-1.0-SNAPSHOT.jar org.ashutosh.WC_Runner/input/input.txt/ output
