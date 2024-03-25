@@ -1,0 +1,90 @@
+Aim:Write a program to implement HMAC signatures.
+
+Theory:
+HMAC (Hash-based Message Authentication Code) is a mechanism for generating a cryptographic signature for verifying the integrity and authenticity of a message. It uses a cryptographic hash function in combination with a secret key. Here's a brief explanation of how HMAC signatures work:
+
+1. **Initialization**: Both the sender and receiver share a secret key \( K \).
+
+2. **Message Preprocessing**: The message to be authenticated is preprocessed if necessary (e.g., padding).
+
+3. **Hashing**: The message is hashed using a cryptographic hash function (such as SHA-256 or MD5) to generate a hash value.
+
+4. **Key Modification**: The secret key \( K \) is modified or padded to match the block size of the hash function, if needed.
+
+5. **Inner and Outer Padding**: The modified key is used to create two different padded keys: one with the XOR operation (inner padding) and another with the XOR operation followed by a bitwise NOT operation (outer padding).
+
+6. **Hashing with Keys**: The hash function is applied twice:
+   - First, the inner padded key is concatenated with the hashed message and hashed together.
+   - Then, the outer padded key is concatenated with the result from the first step, and the combined data is hashed again.
+
+7. **Result**: The output of the second hash operation is the HMAC signature, which is sent along with the message.
+
+Example:
+
+Let's say we want to generate an HMAC signature for the message "Hello, world!" using the SHA-256 hash function and a secret key "secretkey".
+
+1. Secret Key: "secretkey"
+2. Message: "Hello, world!"
+3. Hash Function: SHA-256
+
+First, we modify the key to match the block size of SHA-256.
+
+Then, we compute the inner and outer padded keys.
+
+Next, we hash the message with the inner padded key and then hash the result with the outer padded key.
+
+The final output is the HMAC signature, which is a fixed-length hash value.
+
+The HMAC signature is then sent along with the original message. The receiver can recompute the HMAC signature using the same secret key and verify if it matches the received signature. If the signatures match, the receiver can be confident that the message has not been tampered with and originates from a trusted source.
+
+
+Source Code:
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
+public class HMACSignature {
+
+    public static void main(String[] args) {
+        System.out.println("4701-Abhang Mane");
+        System.out.println("****HMAC Signatures****");
+
+        try {
+            // Secret key
+            String secretKey = "MySecretKey123";
+            // Message to be signed
+            String message = "Hello, world!";
+
+            // Generate HMAC signature
+            String hmacSignature = generateHMAC(message, secretKey);
+
+            // Print HMAC signature
+            System.out.println("HMAC Signature: " + hmacSignature);
+
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Function to generate HMAC signature
+    public static String generateHMAC(String message, String secretKey)
+            throws NoSuchAlgorithmException, InvalidKeyException {
+        // Get HMAC-SHA256 algorithm instance
+        Mac hmacSHA256 = Mac.getInstance("HmacSHA256");
+        // Initialize HMAC with secret key
+        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
+        hmacSHA256.init(secretKeySpec);
+        // Compute HMAC signature
+        byte[] hmacBytes = hmacSHA256.doFinal(message.getBytes());
+        // Convert byte array to base64 string
+        return Base64.getEncoder().encodeToString(hmacBytes);
+    }
+}
+
+
+Output:
+
+
+Conclusion:Hence HMAC signature was implemented successfully.

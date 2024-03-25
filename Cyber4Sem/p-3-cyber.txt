@@ -1,0 +1,105 @@
+Aim:Write a program to implement the  RSA Algorithm to perform encryption and 
+decryption. 
+Theory:
+RSA algorithm is an asymmetric cryptography algorithm. Asymmetric actually means that it works on two different keys i.e. Public Key and Private Key. As the name describes that the Public Key is given to everyone and the Private key is kept private.
+An example of asymmetric cryptography: 
+A client (for example browser) sends its public key to the server and requests some data.
+The server encrypts the data using the client’s public key and sends the encrypted data.
+The client receives this data and decrypts it.
+Since this is asymmetric, nobody else except the browser can decrypt the data even if a third party has the public key of the browser.
+The idea! The idea of RSA is based on the fact that it is difficult to factorize a large integer. The public key consists of two numbers where one number is a multiplication of two large prime numbers. And private key is also derived from the same two prime numbers. So if somebody can factorize the large number, the private key is compromised. Therefore encryption strength totally lies on the key size and if we double or triple the key size, the strength of encryption increases exponentially. RSA keys can be typically 1024 or 2048 bits long, but experts believe that 1024-bit keys could be broken in the near future. But till now it seems to be an infeasible task.
+
+Advantages:
+Security: RSA algorithm is considered to be very secure and is widely used for secure data transmission.
+Public-key cryptography: RSA algorithm is a public-key cryptography algorithm, which means that it uses two different keys for encryption and decryption. The public key is used to encrypt the data, while the private key is used to decrypt the data.
+Key exchange: RSA algorithm can be used for secure key exchange, which means that two parties can exchange a secret key without actually sending the key over the network.
+
+Disadvantages:
+Slow processing speed: RSA algorithm is slower than other encryption algorithms, especially when dealing with large amounts of data.
+Large key size: RSA algorithm requires large key sizes to be secure, which means that it requires more computational resources and storage space.
+Vulnerability to side-channel attacks: RSA algorithm is vulnerable to side-channel attacks, which means an attacker can use information leaked through side channels such as power consumption, electromagnetic radiation, and timing analysis to extract the private key.
+
+
+Source Code:
+/*package whatever //do not write package name here */
+import java.io.*;
+import java.math.*;
+import java.util.*;
+/*
+* Java program for RSA asymmetric cryptographic algorithm.
+* For demonstration, values are
+* relatively small compared to practical application
+*/
+public class RSA {
+	public static double gcd(double a, double h)
+	{
+		/*
+		* This function returns the gcd or greatest common
+		* divisor
+		*/
+		double temp;
+		while (true) {
+			temp = a % h;
+			if (temp == 0)
+				return h;
+			a = h;
+			h = temp;
+		}
+	}
+	public static void main(String[] args)
+	{
+	    System.out.println("4701-Abhang Mane");
+	    System.out.println("****RSA Algorithm****");
+		double p = 3;
+		double q = 7;
+
+		// Stores the first part of public key:
+		double n = p * q;
+
+		// Finding the other part of public key.
+		// double e stands for encrypt
+		double e = 2;
+		double phi = (p - 1) * (q - 1);
+		while (e < phi) {
+			/*
+			* e must be co-prime to phi and
+			* smaller than phi.
+			*/
+			if (gcd(e, phi) == 1)
+				break;
+			else
+				e++;
+		}
+		int k = 2; // A constant value
+		double d = (1 + (k * phi)) / e;
+
+		// Message to be encrypted
+		double msg = 12;
+
+		System.out.println("Message data = " + msg);
+
+		// Encryption c = (msg ^ e) % n
+		double c = Math.pow(msg, e);
+		c = c % n;
+		System.out.println("Encrypted data = " + c);
+
+		// Decryption m = (c ^ d) % n
+		double m = Math.pow(c, d);
+		m = m % n;
+		System.out.println("Original Message Sent = " + m);
+	}
+}
+
+
+
+Output:
+
+
+Conclusion:Hence RSA algorithm was implemented successfully passing message data encrypting and printing original message sent with public and private keys.
+
+
+
+
+
+
+

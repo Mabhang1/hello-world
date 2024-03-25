@@ -1,0 +1,125 @@
+Aim:Write a program to implement the Diffie-Hellman Key Agreement algorithm to
+generate symmetric keys.
+
+Theory:
+
+The Diffie-Hellman Key Exchange is a method for two parties to securely generate a shared secret key over an insecure channel. It allows two parties to agree on a shared secret without directly exchanging any secret information.
+
+Here's a brief explanation with an example:
+
+1. **Initialization**: Both parties agree on a public prime number \( p \) and a primitive root modulo \( p \), usually denoted as \( g \).
+
+2. **Key Generation**:
+   - Each party chooses a private key:
+     - Party A selects a private key \( a \) and calculates \( A = g^a \mod p \).
+     - Party B selects a private key \( b \) and calculates \( B = g^b \mod p \).
+
+3. **Exchange**:
+   - Party A sends \( A \) to Party B.
+   - Party B sends \( B \) to Party A.
+
+4. **Secret Key Calculation**:
+   - Party A calculates the shared secret key using the received value \( B \):
+     \( K = B^a \mod p \).
+   - Party B calculates the shared secret key using the received value \( A \):
+     \( K = A^b \mod p \).
+
+5. **Result**: Both parties now have the same shared secret key \( K \), which they can use for symmetric encryption.
+
+Example:
+Let's say Party A and Party B agree on \( p = 23 \) and \( g = 5 \).
+
+Party A chooses a private key \( a = 6 \):
+\( A = 5^6 \mod 23 = 8 \).
+
+Party B chooses a private key \( b = 15 \):
+\( B = 5^{15} \mod 23 = 19 \).
+
+Party A sends \( A = 8 \) to Party B.
+Party B sends \( B = 19 \) to Party A.
+
+Party A calculates the shared secret key:
+\( K = 19^6 \mod 23 = 2 \).
+
+Party B calculates the shared secret key:
+\( K = 8^{15} \mod 23 = 2 \).
+
+Both parties now have the same shared secret key \( K = 2 \), which they can use for symmetric encryption.
+
+
+
+Source Code:
+// This program calculates the Key for two persons
+// using the Diffie-Hellman Key exchange algorithm
+class DiffieHillman {
+
+	// Power function to return value of a ^ b mod P
+	private static long power(long a, long b, long p)
+	{
+		if (b == 1)
+			return a;
+		else
+			return (((long)Math.pow(a, b)) % p);
+	}
+
+	// Driver code
+	public static void main(String[] args)
+	{
+	    System.out.println("4701-Abhang Mane");
+        System.out.println("****Diffie Hillman Algorithm****");
+		long P, G, x, a, y, b, ka, kb;
+
+		// Both the persons will be agreed upon the
+		// public keys G and P
+
+		// A prime number P is taken
+		P = 23;
+		System.out.println("The value of P:" + P);
+
+		// A primitive root for P, G is taken
+		G = 9;
+		System.out.println("The value of G:" + G);
+
+		// Alice will choose the private key a
+		// a is the chosen private key
+		a = 4;
+		System.out.println("The private key a for Alice:"
+						+ a);
+
+		// Gets the generated key
+		x = power(G, a, P);
+
+		// Bob will choose the private key b
+		// b is the chosen private key
+		b = 3;
+		System.out.println("The private key b for Bob:"
+						+ b);
+
+		// Gets the generated key
+		y = power(G, b, P);
+
+		// Generating the secret key after the exchange
+		// of keys
+		ka = power(y, a, P); // Secret key for Alice
+		kb = power(x, b, P); // Secret key for Bob
+
+		System.out.println("Secret key for the Alice is:"
+						+ ka);
+		System.out.println("Secret key for the Bob is:"
+						+ kb);
+	}
+}
+
+
+Output:
+
+
+Conclusion:Hence Diffie Hillman algorithm was implemented successfully.
+
+
+
+
+
+
+
+

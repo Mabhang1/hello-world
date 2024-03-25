@@ -1,0 +1,165 @@
+Aim:Write a program to implement the (i) Miller-Rabin Algorithm (ii) pollard p-1
+Algorithm to perform encryption and decryption.
+
+Theory:
+(i) Miller-Rabin Algorithm:
+The Miller-Rabin Algorithm is a probabilistic primality test used to determine if a given number is likely to be prime or composite. It repeatedly applies a test based on modular exponentiation and checks if the number passes the test with a certain probability.
+Example:
+Let's test if the number 561 is prime using the Miller-Rabin Algorithm.
+We'll choose a random base a (let's say 2) and apply the test:
+Calculate b = a^d mod n, where d = 561 - 1 = 560 and n = 561.
+Since b = 2^560 mod 561 ≡ 1 (mod 561), move to the next step.
+Check if there's a value of r (with 0 <= r < s) such that b^(2^r) mod n is congruent to n - 1 (560 in this case). If yes, then the number might be prime.
+Since 561 doesn't pass the Miller-Rabin test for base 2, it's composite.
+
+(ii) Pollard p-1 Algorithm:
+Pollard p-1 Algorithm is a method for factoring large composite numbers. It's based on Fermat's Little Theorem and uses the idea that if p is a prime factor of n and a is coprime to n, then a^(p-1) ≡ 1 (mod p). It iteratively tries different values of a to find a common factor of n.
+Example:
+Let's factor the number 91 using the Pollard p-1 Algorithm.
+Choose a random value for a (let's say 2) and a bound B (let's say 10).
+Compute gcd(a^B - 1, n), where gcd is the greatest common divisor function.
+If the result is not 1 or n, then it's a non-trivial factor of n.
+Otherwise, increment a and repeat the process until a suitable factor is found or the bound is exceeded.
+Using a = 2 and B = 10, we compute gcd(2^10 - 1, 91) = gcd(1023, 91) = 13, which is a non-trivial factor of 91.
+So, the Pollard p-1 Algorithm found one factor of 91 as 13. Further iterations or different choices of a and B could potentially find more factors.
+
+
+Source Code:
+import java.util.Random;
+
+public class PrimalityTestAndFactorization {
+
+    public static void main(String[] args) {
+        System.out.println("4701-Abhang Mane");
+        System.out.println("****Miller-Rabin Pollard p-1****");
+
+        long n = 561; // Example number for demonstration
+
+        // Miller-Rabin Test
+        int k = 5; // Number of iterations for accuracy
+        boolean isPrime = millerRabinTest(n, k);
+        System.out.println("Miller-Rabin Test Result:");
+        System.out.println(n + " is " + (isPrime ? "probably prime." : "composite."));
+
+        // Pollard p-1 Factorization
+        long factor = pollardPMinus1Factorization(n);
+        System.out.println("\nPollard p-1 Factorization Result:");
+        System.out.println("One factor of " + n + " is: " + factor);
+    }
+
+    // Miller-Rabin Primality Test
+    public static boolean millerRabinTest(long n, int k) {
+        if (n <= 1 || n == 4)
+            return false;
+        if (n <= 3)
+            return true;
+
+        long d = n - 1;
+        while (d % 2 == 0)
+            d /= 2;
+
+        for (int i = 0; i < k; i++) {
+            long a = 2 + (long) (Math.random() % (n - 3));
+            long x = modularExponentiation(a, d, n);
+            if (x == 1 || x == n - 1)
+                continue;
+
+            boolean isProbablePrime = false;
+            while (d != n - 1) {
+                x = (x * x) % n;
+                d *= 2;
+                if (x == 1)
+                    return false;
+                if (x == n - 1) {
+                    isProbablePrime = true;
+                    break;
+                }
+            }
+            if (!isProbablePrime)
+                return false;
+        }
+        return true;
+    }
+
+    // Pollard p-1 Factorization Algorithm
+    public static long pollardPMinus1Factorization(long n) {
+        long x = 2;
+        long y = 2;
+        long d = 1;
+        long c = 1;
+        Random random = new Random();
+
+        while (d == 1) {
+            x = (modularExponentiation(x, c, n) + n) % n;
+            y = (modularExponentiation(modularExponentiation(y, 2, n) + n, c, n) + n) % n;
+            d = gcd(Math.abs(x - y), n);
+            c++;
+            if (random.nextInt(100) == 0) { // Occasionally reset to minimize loop size
+                x = 2;
+                y = 2;
+                d = 1;
+                c = 1;
+            }
+        }
+        return d;
+    }
+
+    // Modular Exponentiation
+    public static long modularExponentiation(long base, long exponent, long mod) {
+        long result = 1;
+        base = base % mod;
+        while (exponent > 0) {
+            if (exponent % 2 == 1)
+                result = (result * base) % mod;
+            exponent >>= 1;
+            base = (base * base) % mod;
+        }
+        return result;
+    }
+
+    // Greatest Common Divisor
+    public static long gcd(long a, long b) {
+        if (b == 0)
+            return a;
+        return gcd(b, a % b);
+    }
+}
+
+
+
+Output:
+
+
+Conclusion: Hence Miller Rabin and Pollard p-1 algorithms were implemented successfully.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
