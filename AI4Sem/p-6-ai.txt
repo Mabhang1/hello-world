@@ -1,0 +1,132 @@
+Aim:Implement the Perceptron Algorithm
+
+Theory:
+Perceptron Algorithm for Restaurant Waiting Problem
+
+Problem Description:
+In the restaurant waiting problem, we aim to predict whether customers will wait for a table based on attributes like weather, number of customers, and whether it's a weekend. We'll use the perceptron algorithm, a simple binary classifier, to learn and predict the waiting behavior.
+
+Algorithm Steps:
+
+1. Data Preparation: Gather a dataset containing examples of restaurant visits with attributes like weather, number of customers, weekend, and the target variable indicating whether customers waited (yes, no).
+
+2. Data Preprocessing: Normalize the input features to a common scale if necessary. Convert the target variable to binary labels (0 for not waiting, 1 for waiting).
+
+3. Initialization: Initialize the weights and bias of the perceptron algorithm randomly or to zero.
+
+4. Training:
+   - Iterate through the dataset:
+     - For each example, calculate the weighted sum of input features and add the bias.
+     - Apply the activation function (e.g., step function or sign function) to the weighted sum to obtain the predicted output.
+     - Compare the predicted output to the actual label and update the weights and bias accordingly:
+       - If the prediction is correct, no update is needed.
+       - If the prediction is incorrect:
+         - For each misclassified example, update the weights and bias using the perceptron update rule:
+           - Weight update: \( w_{i+1} = w_i + \alpha \times (y - \hat{y}) \times x_i \)
+           - Bias update: \( b_{i+1} = b_i + \alpha \times (y - \hat{y}) \)
+         Where \( w_i \) is the weight, \( b_i \) is the bias, \( \alpha \) is the learning rate, \( y \) is the actual label, \( \hat{y} \) is the predicted output, and \( x_i \) is the input feature.
+
+5. Validation and Testing: Assess the performance of the trained perceptron algorithm on validation and test datasets to evaluate its accuracy and generalization ability.
+
+6. Fine-Tuning: Adjust hyperparameters such as the learning rate and number of epochs based on validation performance to improve the model's effectiveness.
+
+Example:
+
+We construct a perceptron algorithm with input neurons corresponding to weather, number of customers, and weekend, and a single output neuron predicting whether customers will wait. We train the perceptron on a dataset of restaurant visits, updating the weights and bias iteratively until it accurately predicts waiting behavior.
+
+Source Code:
+import java.util.*;
+
+public class PerceptronAlgorithm {
+    static class Example {
+        double[] input;
+        int output;
+
+        Example(double[] input, int output) {
+            this.input = input;
+            this.output = output;
+        }
+    }
+
+    static class Perceptron {
+        double[] weights;
+
+        Perceptron(int numInputs) {
+            weights = new double[numInputs];
+            initializeWeights();
+        }
+
+        void initializeWeights() {
+            Random rand = new Random();
+            for (int i = 0; i < weights.length; i++) {
+                weights[i] = rand.nextDouble();
+            }
+        }
+
+        int activate(double[] input) {
+            double sum = 0;
+            for (int i = 0; i < input.length; i++) {
+                sum += input[i] * weights[i];
+            }
+            return sum >= 0 ? 1 : 0;
+        }
+
+        void train(List<Example> trainingData, double learningRate, int epochs) {
+            for (int epoch = 0; epoch < epochs; epoch++) {
+                for (Example example : trainingData) {
+                    int predicted = activate(example.input);
+                    int error = example.output - predicted;
+                    for (int i = 0; i < weights.length; i++) {
+                        weights[i] += learningRate * error * example.input[i];
+                    }
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Perceptron Algorithm for Restaurant Waiting Problem");
+
+        List<Example> trainingData = Arrays.asList(
+                new Example(new double[]{1, 1, 0, 0}, 0), // Example inputs and corresponding outputs
+                new Example(new double[]{1, 0, 1, 0}, 1),
+                new Example(new double[]{0, 1, 0, 1}, 1)
+        );
+
+        Perceptron perceptron = new Perceptron(4);
+        double learningRate = 0.1;
+        int epochs = 1000;
+
+        perceptron.train(trainingData, learningRate, epochs);
+
+        System.out.println("Weights after training:");
+        System.out.println(Arrays.toString(perceptron.weights));
+    }
+}
+
+Output:
+
+
+Conclusion:Hence Perceptron Algorithm was implemented successfully.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

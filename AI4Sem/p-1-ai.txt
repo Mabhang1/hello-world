@@ -1,0 +1,59 @@
+
+import java.util.*;
+
+public class BFSRomanianMap {
+    static Map<String, List<String>> romaniaMap = new HashMap<>();
+    
+    static {
+        romaniaMap.put("Arad", Arrays.asList("Zerind", "Sibiu"));
+        romaniaMap.put("Zerind", Arrays.asList("Arad", "Oradea"));
+        romaniaMap.put("Oradea", Arrays.asList("Zerind", "Sibiu"));
+        romaniaMap.put("Sibiu", Arrays.asList("Arad", "Oradea", "Fagaras"));
+        romaniaMap.put("Fagaras", Arrays.asList("Sibiu", "Bucharest"));
+        romaniaMap.put("Bucharest", Arrays.asList("Fagaras"));
+    }
+    
+    public static void main(String[] args) {
+        System.out.println("4701-Abhang Mane");
+        System.out.println("BFS for Romanian map problem");
+        
+        String startCity = "Arad";
+        String goalCity = "Bucharest";
+        
+        List<String> path = bfs(startCity, goalCity);
+        
+        if (path != null) {
+            System.out.println("Path found: " + path);
+        } else {
+            System.out.println("Path not found!");
+        }
+    }
+    
+    static List<String> bfs(String start, String goal) {
+        Queue<List<String>> queue = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+        
+        queue.add(Collections.singletonList(start));
+        visited.add(start);
+        
+        while (!queue.isEmpty()) {
+            List<String> path = queue.remove();
+            String city = path.get(path.size() - 1);
+            
+            if (city.equals(goal)) {
+                return path;
+            }
+            
+            for (String neighbor : romaniaMap.get(city)) {
+                if (!visited.contains(neighbor)) {
+                    List<String> newPath = new ArrayList<>(path);
+                    newPath.add(neighbor);
+                    queue.add(newPath);
+                    visited.add(neighbor);
+                }
+            }
+        }
+        
+        return null;
+    }
+}

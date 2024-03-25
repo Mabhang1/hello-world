@@ -1,0 +1,129 @@
+Aim:Implement Fuzzy Inference System
+
+Theory:
+Fuzzy Inference System for Restaurant Waiting Problem
+
+Problem Description:
+In the restaurant waiting problem, we aim to predict whether customers will wait for a table based on factors like weather, number of customers, and whether it's a weekend. We'll use a Fuzzy Inference System (FIS), a computational model that simulates human decision-making processes using fuzzy logic, to handle uncertainty and imprecision in the problem.
+
+Algorithm Steps:
+
+1. Fuzzyfication:
+   - Define linguistic variables for input and output attributes (e.g., weather, number of customers, waiting time).
+   - Partition each linguistic variable into fuzzy sets (e.g., "sunny," "rainy," "few," "moderate," "many") with membership functions describing their fuzzy boundaries.
+
+2. Rule Base:
+   - Formulate a set of fuzzy if-then rules based on domain knowledge or expert input. These rules relate fuzzy inputs to fuzzy outputs.
+   - For example: IF weather is sunny AND number of customers is few THEN waiting time is short.
+
+3. Fuzzy Inference:
+   - Apply fuzzy logic to interpret the fuzzy inputs and derive fuzzy outputs using the defined rules.
+   - Use fuzzy inference methods like Mamdani or Sugeno to combine fuzzy input values and rules to produce fuzzy output values.
+
+4. Defuzzification:
+   - Convert fuzzy output values into crisp (definite) values suitable for decision-making.
+   - Use methods such as centroid defuzzification or weighted average to determine the most likely output value based on the fuzzy output distribution.
+
+5. Validation and Testing:
+   - Evaluate the performance of the FIS on validation and test datasets to assess its accuracy and effectiveness.
+   - Adjust fuzzy sets, rules, and inference methods based on validation results to improve performance.
+
+6. Fine-Tuning:
+   - Fine-tune the FIS parameters, such as fuzzy sets and rules, based on feedback from domain experts or analysis of model performance.
+
+Example:
+
+We construct a Fuzzy Inference System with linguistic variables for weather, number of customers, and waiting time, partitioned into fuzzy sets such as "sunny," "few," and "short." We define fuzzy rules relating input variables to output (waiting time). The FIS interprets fuzzy inputs, applies fuzzy inference methods, and defuzzifies the output to determine the waiting time.
+
+Source Code:
+import java.util.*;
+
+public class FuzzyInferenceSystem {
+    static class FuzzyRule {
+        String condition;
+        String output;
+
+        FuzzyRule(String condition, String output) {
+            this.condition = condition;
+            this.output = output;
+        }
+
+        boolean matches(String input) {
+            // For simplicity, a rule matches if the condition exactly matches the input
+            return condition.equals(input);
+        }
+    }
+
+    static class FuzzyInferenceModel {
+        List<FuzzyRule> rules;
+
+        FuzzyInferenceModel() {
+            rules = new ArrayList<>();
+            // Add fuzzy rules
+            rules.add(new FuzzyRule("Sunny", "Wait"));
+            rules.add(new FuzzyRule("Overcast", "Wait"));
+            rules.add(new FuzzyRule("Rain", "Don't wait"));
+        }
+
+        String infer(String input) {
+            // Find the matching rule and return the output
+            for (FuzzyRule rule : rules) {
+                if (rule.matches(input)) {
+                    return rule.output;
+                }
+            }
+            return "Unknown"; // No matching rule found
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Fuzzy Inference System for Restaurant Waiting Problem");
+
+        FuzzyInferenceModel model = new FuzzyInferenceModel();
+
+        String input = "Sunny"; // Example input
+        String output = model.infer(input);
+
+        System.out.println("Input: " + input);
+        System.out.println("Output: " + output);
+    }
+}
+
+
+
+
+
+
+Output:
+
+
+Conclusion:Hence Fuzzy Inference System was implemented successfully.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

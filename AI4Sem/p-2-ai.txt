@@ -1,0 +1,138 @@
+Aim:Implement Iterative deep depth first search for Romanian map problem.
+
+Theory:
+Iterative Deepening Depth-First Search (IDDFS) for Romanian Map Problem
+
+Iterative Deepening Depth-First Search (IDDFS) is a combination of Breadth-First Search (BFS) and Depth-First Search (DFS) algorithms. It aims to combine the advantages of both algorithms while avoiding their respective limitations. IDDFS gradually increases the depth limit of DFS until the goal is found, effectively performing a depth-first search with increasing depth limits.
+
+Algorithm:
+
+1. Initialize: Set the depth limit to 0.
+   
+2. Iterative Deepening Loop:
+   - Execute DFS with the current depth limit.
+   - If the goal state is found, terminate and return the solution.
+   - Otherwise, increment the depth limit and repeat the process.
+
+Example - Romanian Map Problem:
+
+Consider the Romanian map problem where cities are nodes and roads are edges. We aim to find the shortest path from Arad to Bucharest using IDDFS.
+
+1. Initialization: Start with depth limit = 0.
+
+2. Iterative Deepening Loop:
+   - Begin DFS from Arad with depth limit 0.
+   - No goal found.
+   
+3. Increment Depth Limit:
+   - Increase depth limit to 1.
+   
+4. Iterative Deepening Loop:
+   - Begin DFS from Arad with depth limit 1.
+   - Explore neighbors of Arad (Timisoara, Sibiu, Zerind).
+   - Continue DFS until depth limit is reached.
+   - No goal found.
+   
+5. Increment Depth Limit:
+   - Increase depth limit to 2.
+   
+6. Iterative Deepening Loop:
+   - Begin DFS from Arad with depth limit 2.
+   - Explore neighbors of Arad and their neighbors.
+   - Continue DFS until depth limit is reached.
+   - No goal found.
+   
+7. Increment Depth Limit:
+   - Increase depth limit to 3.
+   
+8. Iterative Deepening Loop:
+   - Begin DFS from Arad with depth limit 3.
+   - Explore neighbors of Arad and their neighbors.
+   - Bucharest found at depth 2.
+   - Return the path from Arad to Bucharest.
+
+Advantages:
+- Guarantees finding the shortest path in a graph with unit edge costs.
+- Avoids the excessive memory requirements of BFS.
+- Preserves the memory efficiency of DFS.
+
+Limitations:
+- Inefficient for graphs with branching factors that grow exponentially with depth.
+- Not suitable for graphs with non-uniform edge costs.
+
+Source Code:
+import java.util.*;
+
+public class IDDFS {
+    static Map<String, List<String>> romaniaMap = new HashMap<>();
+    
+    static {
+        romaniaMap.put("Arad", Arrays.asList("Zerind", "Sibiu"));
+        romaniaMap.put("Zerind", Arrays.asList("Arad", "Oradea"));
+        romaniaMap.put("Oradea", Arrays.asList("Zerind", "Sibiu"));
+        romaniaMap.put("Sibiu", Arrays.asList("Arad", "Oradea", "Fagaras"));
+        romaniaMap.put("Fagaras", Arrays.asList("Sibiu", "Bucharest"));
+        romaniaMap.put("Bucharest", Arrays.asList("Fagaras"));
+    }
+    
+    static List<String> iterativeDeepeningDFS(String start, String goal, int maxDepth) {
+        for (int depth = 0; depth <= maxDepth; depth++) {
+            List<String> path = depthLimitedDFS(start, goal, depth);
+            if (path != null) {
+                return path;
+            }
+        }
+        return null;
+    }
+    
+    static List<String> depthLimitedDFS(String current, String goal, int depth) {
+        return depthLimitedDFSHelper(current, goal, depth, new HashSet<>(), new ArrayList<>(Collections.singletonList(current)));
+    }
+    
+    static List<String> depthLimitedDFSHelper(String current, String goal, int depth, Set<String> visited, List<String> path) {
+        if (depth == 0 && current.equals(goal)) {
+            return path;
+        }
+        
+        if (depth > 0) {
+            visited.add(current);
+            for (String neighbor : romaniaMap.get(current)) {
+                if (!visited.contains(neighbor)) {
+                    List<String> newPath = new ArrayList<>(path);
+                    newPath.add(neighbor);
+                    List<String> result = depthLimitedDFSHelper(neighbor, goal, depth - 1, visited, newPath);
+                    if (result != null && result.get(result.size() - 1).equals(goal)) {
+                        return result;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    public static void main(String[] args) {
+        System.out.println("4701-Abhang Mane");
+        System.out.println("Iterative Deepening DFS for Romanian map problem");
+        
+        String startCity = "Arad";
+        String goalCity = "Bucharest";
+        
+        List<String> path = iterativeDeepeningDFS(startCity, goalCity, 3); // Maximum depth set to 3
+        
+        if (path != null) {
+            System.out.println("Path found: " + path);
+        } else {
+            System.out.println("Path not found!");
+        }
+    }
+}
+
+Output:
+
+
+Conclusion:Hence Iterative deep depth first search for Romanian map problem was implemented successfully.
+
+
+
+
+

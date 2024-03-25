@@ -1,0 +1,131 @@
+Aim:Implement recursive best-first search algorithm for Romanian map problem.
+
+Theory:
+Recursive Best-First Search (RBFS) is a memory-efficient variant of the Best-First Search algorithm that does not store the entire search tree in memory. Instead, it uses recursion to explore the most promising paths, backtracking when necessary to explore other potential solutions.
+
+Romanian Map Problem:
+
+Consider a map of Romania where cities are represented as nodes and roads as edges. Let's find the shortest path from a start city (e.g., Arad) to a goal city (e.g., Bucharest) using RBFS.
+
+Algorithm Steps:
+
+1. Initialize: Start with the initial node (start city) and set the initial upper bound as infinity.
+   
+2. Base Case: If the current node is the goal city, return the path.
+
+3. Expand Node: Expand the current node by generating its successors (neighboring cities).
+
+4. Sort Successors: Sort the successors based on their heuristic values (estimated distance to the goal city).
+
+5. Loop through Successors:
+   - For each successor:
+     - If the heuristic value exceeds the current upper bound, update the new upper bound.
+     - Otherwise, recursively call RBFS on the successor with the new upper bound.
+     - If the result indicates a successful path, return it.
+     - Otherwise, update the upper bound with the minimum value among all successors.
+
+6. Backtrack: If no solution is found, backtrack to the parent node and update the upper bound.
+
+7. Repeat: Repeat steps 2-6 until a solution is found or the entire search space is explored.
+
+Example:
+
+Consider finding the shortest path from Arad to Bucharest:
+1. Start with Arad and set the initial upper bound as infinity.
+2. Expand Arad's successors (Timisoara, Sibiu, Zerind) and sort them based on heuristic values.
+3. Recursively call RBFS on each successor, updating the upper bound accordingly.
+4. If a successful path is found, return it; otherwise, backtrack and explore other paths.
+
+Source Code:
+import numpy as np
+class Graph:
+    def __init__(self):
+        self.edges={"Arad":["Zerind","Timisoara","Sibiu"],"Eforie":["Hirsova"],"Zerind":["Oradia","Arad"],
+                    "Oradia":["Sibiu","Zerind"],"Mehadia":["Drobeta","Lugoj"],"Giurgiu":["Bucharest"],
+                    "Timisoara":["Lugoj","Arad"],"Lugoj":["Mehadia","Timisoara"],"Drobeta":["Craiova","Mehadia"],
+                    "Sibiu":["Fagaras","Rimnicu","Oradia","Arad"],"Craiova":["Rimnicu","Pitesti","Drobeta"],
+                    "Rimnicu":["Craiova","Pitesti","Sibiu"],"Fagaras":["Bucharest","Sibiu"],
+                    "Pitesti":["Bucharest","Rimnicu","Craiova"],"Bucharest":["Giurgiu","Urziceni","Pitesti","Fagaras"],
+                    "Urziceni":["Hirsova","Vasluni","Bucharest"],"Hirsova":["Eforie","Urziceni"],"Neamt":["Iasi"],
+                    "Vasluni":["Iasi","Urziceni"],"Iasi":["Neamt","Vasluni"],
+                    }
+        
+        
+        
+        self.heuristic={"Arad":366,"Zerind":374,"Oradia":380,"Timisoara":329,"Lugoj":244,"Mehadia":241,"Hirsova":120,
+                      "Drobeta":242,"Sibiu":253,"Craiova":160,"Rimnicu":193,"Pitesti":100,"Fagaras":176,
+                      "Bucharest":0,"Giurgiu":77,"Urziceni":80,"Eforie":161,"Vasluni":199,"Iasi":226,"Neamt":234}
+        
+        
+    def neighbors(self,node):
+        return self.edges[node]
+    
+    def hsld(self,node):
+        return self.heuristic[node]
+    
+def befs(graph,city,open,closed):
+    for neighs in graph.neighbors(city):
+        open.append([neighs,graph.hsld(neighs)])
+    closed.append(city)
+    open=sort_open(open)
+    city=open[0][0]
+    open.pop(0)
+    if city==final:
+        closed.append(final)
+        return
+    befs(graph,city,open,closed)
+    
+def sort_open(open):
+    my_hsld=[]
+    my_cities=[]
+    for i in range(len(open)):
+        my_hsld.append(open[i][1])
+        my_cities.append(open[i][0])
+    sorted_costs=np.argsort(my_hsld)
+    open=[[my_cities[i],my_hsld[i]] for i in sorted_costs]
+    return open
+    
+if __name__=='__main__':
+    graph=Graph()
+    open=[]
+    closed=[]
+    print("4701-Abhang Mane")
+    print("Recursive Best-First Search for Romanian map problem")
+    start='Arad'
+    final='Bucharest'
+    city=start
+    befs(graph,city,open,closed)
+    for city in closed:
+        print(city,end='')
+        if city!=final:
+            print(' ---> ',end='')
+
+Output:
+
+
+Conclusion:Hence recursive best-first search algorithm for Romanian map problem was implemented successfully.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

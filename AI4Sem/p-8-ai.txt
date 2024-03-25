@@ -1,0 +1,206 @@
+Aim:Solve Fuzzy Control Systems: The Tipping Problem
+
+Theory:
+Fuzzy Control System for The Tipping Problem
+
+Problem Description:
+The tipping problem involves determining the appropriate tip percentage to leave at a restaurant based on the quality of service and the food. We'll use a Fuzzy Control System (FCS) to model and control the tipping decision based on linguistic variables and fuzzy rules.
+
+Algorithm Steps:
+
+1. Fuzzyfication:
+   - Define linguistic variables for input attributes (service quality, food quality) and output (tip percentage).
+   - Partition each linguistic variable into fuzzy sets with membership functions (e.g., "poor," "average," "good") describing their fuzzy boundaries.
+
+2. Rule Base:
+   - Formulate a set of fuzzy if-then rules based on expert knowledge or intuition. These rules relate fuzzy inputs to fuzzy outputs.
+   - For example: IF service is poor OR food is poor THEN tip is low.
+
+3. Fuzzy Inference:
+   - Apply fuzzy logic to interpret the fuzzy inputs and derive fuzzy outputs using the defined rules.
+   - Use fuzzy inference methods like Mamdani or Sugeno to combine fuzzy input values and rules to produce fuzzy output values.
+
+4. Defuzzification:
+   - Convert fuzzy output values into crisp (definite) values suitable for decision-making.
+   - Use methods such as centroid defuzzification or weighted average to determine the most appropriate tip percentage based on the fuzzy output distribution.
+
+5. Validation and Testing:
+   - Evaluate the performance of the Fuzzy Control System on validation and test datasets to assess its accuracy and effectiveness.
+   - Adjust fuzzy sets, rules, and inference methods based on validation results to improve performance.
+
+6. Fine-Tuning:
+   - Fine-tune the Fuzzy Control System parameters, such as fuzzy sets and rules, based on feedback from domain experts or analysis of model performance.
+
+Example:
+
+We construct a Fuzzy Control System with linguistic variables for service quality and food quality, partitioned into fuzzy sets such as "poor," "average," and "good." We define fuzzy rules relating input variables to output (tip percentage). The FCS interprets fuzzy inputs, applies fuzzy inference methods, and defuzzifies the output to determine the appropriate tip percentage.
+
+Source Code:
+import java.util.*;
+
+public class FuzzyControlSystem {
+    static class FuzzySet {
+        String name;
+        double value;
+
+        FuzzySet(String name, double value) {
+            this.name = name;
+            this.value = value;
+        }
+    }
+
+    static class FuzzyVariable {
+        List<FuzzySet> sets;
+
+        FuzzyVariable() {
+            sets = new ArrayList<>();
+        }
+
+        void addSet(String name, double value) {
+            sets.add(new FuzzySet(name, value));
+        }
+
+        double getValue(String setName) {
+            for (FuzzySet set : sets) {
+                if (set.name.equals(setName)) {
+                    return set.value;
+                }
+            }
+            return 0.0; // Default value if set not found
+        }
+    }
+
+    static class FuzzyRule {
+        String condition;
+        String output;
+
+        FuzzyRule(String condition, String output) {
+            this.condition = condition;
+            this.output = output;
+        }
+
+        boolean matches(double input) {
+            // For simplicity, a rule matches if the input falls within the condition range
+            String[] range = condition.split("-");
+            double lowerBound = Double.parseDouble(range[0]);
+            double upperBound = Double.parseDouble(range[1]);
+            return input >= lowerBound && input <= upperBound;
+        }
+    }
+
+    static class FuzzyControlModel {
+        FuzzyVariable service;
+        FuzzyVariable food;
+        List<FuzzyRule> rules;
+
+        FuzzyControlModel() {
+            service = new FuzzyVariable();
+            service.addSet("Poor", 0.0);
+            service.addSet("Good", 0.0);
+            service.addSet("Excellent", 0.0);
+
+            food = new FuzzyVariable();
+            food.addSet("Rancid", 0.0);
+            food.addSet("Delicious", 0.0);
+
+            rules = new ArrayList<>();
+            // Add fuzzy rules
+            rules.add(new FuzzyRule("0-5", "Poor"));
+            rules.add(new FuzzyRule("2-9", "Good"));
+            rules.add(new FuzzyRule("5-10", "Excellent"));
+        }
+
+        double fuzzifyInput(double input, FuzzyVariable variable) {
+            for (FuzzySet set : variable.sets) {
+                double value = calculateMembership(input, set.name);
+                if (value > set.value) {
+                    set.value = value;
+                }
+            }
+            return input;
+        }
+
+        double calculateMembership(double input, String setName) {
+            // Fuzzy membership function calculation
+            if (setName.equals("Poor")) {
+                return Math.max(0, Math.min(1, (5 - input) / (5 - 0)));
+            } else if (setName.equals("Good")) {
+                return Math.max(0, Math.min(1, (Math.abs(input - 5) - 2) / (5 - 2)));
+            } else if (setName.equals("Excellent")) {
+                return Math.max(0, Math.min(1, (input - 2) / (5 - 2)));
+            } else if (setName.equals("Rancid")) {
+                return Math.max(0, Math.min(1, (5 - input) / (5 - 0)));
+            } else if (setName.equals("Delicious")) {
+                return Math.max(0, Math.min(1, (input - 5) / (10 - 5)));
+            }
+            return 0.0; // Default value
+        }
+
+        double defuzzifyOutput() {
+            // Fuzzy inference (Centroid Method) - Defuzzification
+            double numerator = 0.0;
+            double denominator = 0.0;
+
+            for (FuzzyRule rule : rules) {
+                double outputValue = service.getValue(rule.output);
+                String[] range = rule.condition.split("-");
+                double lowerBound = Double.parseDouble(range[0]);
+                double upperBound = Double.parseDouble(range[1]);
+                double midPoint = (lowerBound + upperBound) / 2.0;
+
+                numerator += midPoint * outputValue;
+                denominator += outputValue;
+            }
+
+            return numerator / denominator;
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("4701-Abhang Mane");
+        System.out.println("Fuzzy Control System for Tipping Problem");
+
+        FuzzyControlModel model = new FuzzyControlModel();
+
+        double serviceInput = 6.5; // Example service input
+        double foodInput = 8.0; // Example food input
+
+        model.fuzzifyInput(serviceInput, model.service);
+        model.fuzzifyInput(foodInput, model.food);
+
+        double tip = model.defuzzifyOutput();
+
+        System.out.println("Service Input: " + serviceInput);
+        System.out.println("Food Input: " + foodInput);
+        System.out.println("Tip: " + tip);
+    }
+}
+
+Output:
+
+
+Conclusion:Hence Fuzzy Control Systems: The Tipping Problem was solved and implemented successfully.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

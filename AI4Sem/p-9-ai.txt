@@ -1,0 +1,140 @@
+Aim:Implement Naive Bayes’ learning algorithm for the restaurant waiting problem.
+
+Theory:
+Naive Bayes Algorithm for Restaurant Waiting Problem
+
+Problem Description:
+In the restaurant waiting problem, we aim to predict whether customers will wait for a table based on factors like weather, number of customers, and whether it's a weekend. Naive Bayes algorithm provides a probabilistic approach to solve this classification problem.
+
+Algorithm Steps:
+
+1. Data Preparation:
+   - Gather a dataset containing examples of restaurant visits with attributes like weather, number of customers, weekend, and the target variable indicating whether customers waited (yes, no).
+
+2. Data Preprocessing:
+   - Convert categorical attributes into numerical values if necessary.
+   - Split the dataset into training and testing sets.
+
+3. Training:
+   - Calculate class prior probabilities \(P(Y)\), where \(Y\) is the target variable indicating waiting (yes, no).
+   - For each attribute \(X_i\) (weather, number of customers, weekend):
+     - Calculate conditional probabilities \(P(X_i|Y)\) for each possible value of \(X_i\) given each class \(Y\).
+     - Use Laplace smoothing or other techniques to handle zero-frequency issues.
+
+4. Prediction:
+   - Given a new instance with attribute values \(x_1, x_2, ..., x_n\):
+     - Calculate the posterior probability \(P(Y|X_1=x_1, X_2=x_2, ..., X_n=x_n)\) for each class \(Y\) using Bayes' theorem:
+       \[P(Y|X_1=x_1, X_2=x_2, ..., X_n=x_n) = \frac{P(Y) \times \prod_{i=1}^{n} P(X_i|Y)}{P(X_1=x_1, X_2=x_2, ..., X_n=x_n)}\]
+     - Choose the class with the highest posterior probability as the predicted class.
+
+5. Evaluation:
+   - Evaluate the performance of the Naive Bayes classifier on the test set using metrics like accuracy, precision, recall, and F1-score.
+
+6. Parameter Tuning:
+   - Fine-tune model parameters such as Laplace smoothing factor or handle categorical variables differently based on insights from validation performance.
+
+Example:
+
+We construct a Naive Bayes classifier with attributes for weather, number of customers, and weekend. We calculate class prior probabilities and conditional probabilities for each attribute given the target variable (waiting or not waiting). We use Bayes' theorem to predict whether customers will wait for a table based on the observed attribute values.
+
+Source Code:
+import java.util.*;
+
+public class NaiveBayesAlgorithm {
+    static class Example {
+        String outlook;
+        String temperature;
+        String humidity;
+        String windy;
+        String wait;
+
+        Example(String outlook, String temperature, String humidity, String windy, String wait) {
+            this.outlook = outlook;
+            this.temperature = temperature;
+            this.humidity = humidity;
+            this.windy = windy;
+            this.wait = wait;
+        }
+    }
+
+    static class NaiveBayesModel {
+        Map<String, Integer> counts;
+        Map<String, Map<String, Integer>> conditionalCounts;
+
+        NaiveBayesModel() {
+            counts = new HashMap<>();
+            conditionalCounts = new HashMap<>();
+        }
+
+        void train(List<Example> trainingData) {
+            for (Example example : trainingData) {
+                // Count occurrences of each class
+                counts.put(example.wait, counts.getOrDefault(example.wait, 0) + 1);
+                // Count occurrences of each attribute value given the class
+                for (String attribute : Arrays.asList(example.outlook, example.temperature, example.humidity, example.windy)) {
+                    conditionalCounts.putIfAbsent(attribute, new HashMap<>());
+                    conditionalCounts.get(attribute).put(example.wait, 
+                        conditionalCounts.get(attribute).getOrDefault(example.wait, 0) + 1);
+                }
+            }
+        }
+
+        String predict(String outlook, String temperature, String humidity, String windy) {
+            double maxProbability = Double.NEGATIVE_INFINITY;
+            String bestClass = null;
+            for (String wait : counts.keySet()) {
+                double probability = Math.log(counts.get(wait) / (double) counts.size());
+                probability += Math.log(conditionalProbability(outlook, wait));
+                probability += Math.log(conditionalProbability(temperature, wait));
+                probability += Math.log(conditionalProbability(humidity, wait));
+                probability += Math.log(conditionalProbability(windy, wait));
+                if (probability > maxProbability) {
+                    maxProbability = probability;
+                    bestClass = wait;
+                }
+            }
+            return bestClass;
+        }
+
+        double conditionalProbability(String attributeValue, String wait) {
+            int attributeCount = conditionalCounts.containsKey(attributeValue) ? conditionalCounts.get(attributeValue).getOrDefault(wait, 0) : 0;
+            int classCount = counts.getOrDefault(wait, 0);
+            return (attributeCount + 1) / (double) (classCount + conditionalCounts.size());
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("4701-Abhang Mane");
+        System.out.println("Naive Bayes Algorithm for Restaurant Waiting Problem");
+
+        List<Example> trainingData = Arrays.asList(
+            new Example("Sunny", "Hot", "High", "Weak", "No"),
+            new Example("Sunny", "Hot", "High", "Strong", "No"),
+            new Example("Overcast", "Hot", "High", "Weak", "Yes"),
+            new Example("Rain", "Mild", "High", "Weak", "Yes"),
+            new Example("Rain", "Cool", "Normal", "Weak", "Yes")
+        );
+
+        NaiveBayesModel model = new NaiveBayesModel();
+        model.train(trainingData);
+
+        String outlook = "Sunny";
+        String temperature = "Cool";
+        String humidity = "Normal";
+        String windy = "Strong";
+
+        String predictedWait = model.predict(outlook, temperature, humidity, windy);
+
+        System.out.println("Predicted Wait: " + predictedWait);
+    }
+}
+
+
+
+
+
+
+Output:
+
+
+Conclusion:Hence Naive Bayes’ learning algorithm for the restaurant waiting problem was implemented successfully.

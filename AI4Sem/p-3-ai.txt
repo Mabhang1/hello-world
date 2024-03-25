@@ -1,0 +1,133 @@
+Aim:Implement A* search algorithm for Romanian map problem.
+
+
+Theory:
+A* search is a widely used graph traversal and pathfinding algorithm that combines the advantages of both uniform-cost search and greedy best-first search. It uses a heuristic function to estimate the cost from the current node to the goal node, guiding the search towards the most promising paths.
+
+Example:
+Consider the Romanian map problem where cities are represented as nodes and roads as edges. Suppose we want to find the shortest path from the city Arad to Bucharest using A* search.
+
+1. Start with the initial node, Arad, and calculate its heuristic value (estimated distance to Bucharest).
+2. Expand Arad's neighboring nodes and calculate their heuristic values.
+3. Calculate the total cost of reaching each neighboring node from Arad by summing the actual cost (distance from Arad) and the heuristic value.
+4. Select the neighboring node with the lowest total cost and expand it.
+5. Repeat steps 2-4 until Bucharest is reached or no more nodes can be expanded.
+6. If Bucharest is reached, backtrack to reconstruct the shortest path.
+
+In A* search, the choice of heuristic function greatly influences the efficiency and accuracy of the algorithm. A good heuristic function should accurately estimate the cost from a node to the goal node without overestimating or underestimating.
+
+For the Romanian map problem, a common heuristic function is the straight-line distance (or Euclidean distance) between two cities, as it provides a reasonable estimate of the actual distance. A* search with this heuristic will efficiently find the shortest path from Arad to Bucharest by considering both the actual distance traveled and the estimated remaining distance.
+
+
+
+
+
+
+Source Code:
+import java.util.*;
+
+public class AStarSearch {
+    static Map<String, List<String>> romaniaMap = new HashMap<>();
+    static Map<String, Integer> heuristicValues = new HashMap<>();
+    
+    static {
+        romaniaMap.put("Arad", Arrays.asList("Zerind", "Sibiu"));
+        romaniaMap.put("Zerind", Arrays.asList("Arad", "Oradea"));
+        romaniaMap.put("Oradea", Arrays.asList("Zerind", "Sibiu"));
+        romaniaMap.put("Sibiu", Arrays.asList("Arad", "Oradea", "Fagaras"));
+        romaniaMap.put("Fagaras", Arrays.asList("Sibiu", "Bucharest"));
+        romaniaMap.put("Bucharest", Arrays.asList("Fagaras"));
+        
+        heuristicValues.put("Arad", 366);
+        heuristicValues.put("Zerind", 374);
+        heuristicValues.put("Oradea", 380);
+        heuristicValues.put("Sibiu", 253);
+        heuristicValues.put("Fagaras", 176);
+        heuristicValues.put("Bucharest", 0);
+    }
+    
+    static class Node implements Comparable<Node> {
+        String city;
+        int cost;
+        
+        Node(String city, int cost) {
+            this.city = city;
+            this.cost = cost;
+        }
+        
+        @Override
+        public int compareTo(Node other) {
+            return Integer.compare(this.cost, other.cost);
+        }
+    }
+    
+    static List<String> aStarSearch(String start, String goal) {
+        PriorityQueue<Node> open = new PriorityQueue<>();
+        open.add(new Node(start, heuristicValues.get(start)));
+        
+        Map<String, Integer> costSoFar = new HashMap<>();
+        costSoFar.put(start, 0);
+        
+        Map<String, String> cameFrom = new HashMap<>();
+        
+        while (!open.isEmpty()) {
+            Node current = open.poll();
+            String currentCity = current.city;
+            
+            if (currentCity.equals(goal)) {
+                return reconstructPath(cameFrom, goal);
+            }
+            
+            for (String neighbor : romaniaMap.get(currentCity)) {
+                int newCost = costSoFar.get(currentCity) + 1; // Assuming uniform cost between neighboring cities
+                
+                if (!costSoFar.containsKey(neighbor) || newCost < costSoFar.get(neighbor)) {
+                    costSoFar.put(neighbor, newCost);
+                    int priority = newCost + heuristicValues.get(neighbor);
+                    open.add(new Node(neighbor, priority));
+                    cameFrom.put(neighbor, currentCity);
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    static List<String> reconstructPath(Map<String, String> cameFrom, String current) {
+        List<String> path = new ArrayList<>();
+        while (cameFrom.containsKey(current)) {
+            path.add(0, current);
+            current = cameFrom.get(current);
+        }
+        path.add(0, current);
+        return path;
+    }
+    
+    public static void main(String[] args) {
+        System.out.println("4701-Abhang Mane");
+        System.out.println("A* Search for Romanian map problem");
+        
+        String startCity = "Arad";
+        String goalCity = "Bucharest";
+        
+        List<String> path = aStarSearch(startCity, goalCity);
+        
+        if (path != null) {
+            System.out.println("Path found: " + path);
+        } else {
+            System.out.println("Path not found!");
+        }
+    }
+}
+
+Output:
+
+
+Conclusion:Hence A* search algorithm for Romanian map problem was implemented successfully.
+
+
+
+
+
+
+
